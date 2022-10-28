@@ -4,11 +4,11 @@
  * @param {string} [param="asc"] param - the sorting type "asc" or "desc"
  * @returns {string[]}
  */
- function doSort_asc (a, b) {
-    return Intl.Collator(['en','ru'],{ caseFirst: 'upper'}).compare(a, b);
+function doSort_asc (a, b) {
+    return Intl.Collator(['ru','en'],{ caseFirst: 'upper'}).compare(a, b);
   }
 function doSort_desc (a, b) {
-    return Intl.Collator(['ru','en'],{ caseFirst: 'lower' }).compare(b, a);
+    return Intl.Collator(['en','ru'],{ caseFirst: 'lower' }).compare(b, a);
   }
 
 export function sortStrings(arr, param = 'asc') {
