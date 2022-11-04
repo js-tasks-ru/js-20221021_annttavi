@@ -7,18 +7,10 @@
 
 export const pick = (obj, ...fields) => {
     let arr_out = {};
-    if (Array.isArray(fields) && fields.length>0) {
-        
-        fields.forEach(element => {
-            if (obj[element]) {
-                arr_out[element] =obj[element];    
-            }
-        });
-    }
-    else { 
-        if (obj[fields]) {
-            arr_out[fields] =obj[fields];
-        }
+    for (let v of fields) {
+        if (obj[v]) {
+            arr_out[v] =obj[v];    
+        } 
     }
     return arr_out;
 }
