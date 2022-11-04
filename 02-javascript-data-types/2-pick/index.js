@@ -22,15 +22,7 @@ export const pick = (obj, ...fields) => {
     }
     return arr_out;
 }
-/*const arr1=["apple","orange"];
-const arr2="apple";
-const fruits = {
-    apple: 2,
-    orange: 4,
-    banana: 3
-   };
 
-console.log (pick (fruits, "banana","orange"));*/
 
 
 
