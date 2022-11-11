@@ -17,7 +17,7 @@ export default class ColumnChart {
         //this.initEventListeners();
         
     }
-
+   
     render() {
         const element = document.createElement("div"); // (*)
         element.innerHTML = this.getTemplate();
@@ -81,8 +81,17 @@ export default class ColumnChart {
         }
         return result;
     }
-    destroy = function () {};
-    
+    remove () {
+        if (this.element) {
+          this.element.remove();
+        }
+      }
+      destroy() {
+        if (this.element) {
+          this.remove();
+          this.element=null;
+        }
+      }
 }
 
 
