@@ -1,13 +1,18 @@
 export default class SortableTable {
+  element;
+  subElements = {};
   constructor(headerConfig = [], data = []) {
     this.headerConfig=headerConfig;
     this.data=data;
-    this.sortMap=new Map();
+    this.sortMap=new Map(); 
     this.sortedData=data;
+    this.sortDirection = "";
+    
     this.render();
   }
   sort (fieldValue, orderValue) {  
     //console.log("sorting "+ this.sortMap[fieldValue]);
+    this.sortDirection=orderValue; //обозначить, какая у нас сейчас сортировка
     let arrItems = new Array();//Массив, у которого 0 элемент это содержимое сортируемой колонки, а 1 элемент вся строка
     for (const item of this.data) { 
       arrItems.push(new Array(item[fieldValue],item));
@@ -22,7 +27,7 @@ export default class SortableTable {
         sortedArr=this.sortNumbers(arrItems,orderValue); //вызов сортировки для чисел, хорошо бы это все тоже сделать ассоциативным массивом
         break;
       default:
-        alert( "Нет таких значений" );
+        alert( "А теперь кастомная сортировка!" );
     }
     //console.log("sortedArr: ");
     //console.log(sortedArr);
@@ -76,7 +81,20 @@ export default class SortableTable {
       element.innerHTML = this.getTemplate();
       this.element = element.firstElementChild;
       
+      this.subElements=this.getSubElements(this.element);
+      //console.log (this.element);
+      
     }
+  getSubElements () { //весь див с таблицей и хедером, зачем только он нам неясно, если у нас есть this.element
+    const result = {};
+    const elements = this.element.querySelectorAll('[data-element]');
+    for (const subElement of elements) {
+      const name = subElement.dataset.element;
+      result[name]=subElement;
+    }
+    //console.log(result);
+    return result;
+  }
   getTemplate() {
     return `<div data-element="productsContainer" class="products-list__container">
     <div class="sortable-table"><div data-element="header" class="sortable-table__header sortable-table__row">
@@ -86,20 +104,31 @@ export default class SortableTable {
     </div></div></div>`;
     
   }
+  
   getPoductRowHtml(item = {}){
-    return `<a href="/products/${item.id}" class="sortable-table__row">
-    <div class="sortable-table__cell" data-element="${item.id}">
-      <img class="sortable-table-image" alt="${item.title}" src="public/cat.jpg"></div>
-    <div class="sortable-table__cell" >${item.title}</div>
-    <div class="sortable-table__cell">${item.quantity}</div>
-    <div class="sortable-table__cell">${item.price}</div>
-    <div class="sortable-table__cell">${item.sales}</div>
-  </a>`;
+    
+    function getTDHtml (cell = {}) {
+      return `<div class="sortable-table__cell">${item[cell.id]}</div>`;
+    }
+    let arr=[];
+    for (const cell of this.headerConfig) { 
+      if (cell.template) {
+        arr.push(cell.template(item));
+      }
+      else {
+        arr.push(getTDHtml(cell)); //оформление ячейки cell.id=data.объект
+      }
+      
+    }
+    return `<a href="/products/${item.id}" class="sortable-table__row">${arr.join("")}</a>`;
   }
+  
 
   getHeader (){ 
+    const direction=this.sortDirection; //не подставляется по ${this.sortDirection} 
     function getCaptionTemplate(item) {
-      return `<div class="sortable-table__cell" data-id="${item.title}" data-sortable="false" data-order="asc"><span>${item.title}</span></div>`;
+      //console.log(this.sortDirection);
+      return `<div class="sortable-table__cell" data-id="${item.title}" data-sortable="${item.sortable}" data-order="${direction}"><span>${item.title}</span></div>`;
     }
     
     let arr=[];
